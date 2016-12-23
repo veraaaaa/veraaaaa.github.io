@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="../lib/jquery-1.12.4.js"></script>
+    <script>
+        $(function() {
+            var liList = document.querySelectorAll("li");
+
+            //找出高度最小的li的索引
+            function getMinLi(arr) {
+                //原生DOM元素获取页面元素的实际高度
+                var min = arr[0].offsetHeight;
+                var index = 0;
+                for(var i = 1,len=arr.length;i<len;i++) {
+                    if(arr[i].offsetHeight < min){
+                        min = arr[i].offsetHeight;
+                        index = i;
+                    }
+                }
+                return index;
+            }
+
+            $.ajax({
+               type: "GET",
+                url: "images.json",
+                async: true,
+                dataType: "json",
+                success: function(data, textStatus) {
+                    console.log(data);
+                    for(var i = 0,len=data.length;i<len;i++) {
+                        var width_self = data[i].width; //本身宽度
+                        var height_self = data[i].height; //本身高度
+                        var src = data[i].image; //图片路径
+                        var title = data[i].title; //图片标题
+
+                        var width_show = 288; //实际显示宽度
+                        //实际显示高度
+                        var height_show = Math.round((height_self/width_self)*288);
+
+                        var $img = $(`<img src=${src} width=${width_show} height=${height_show}>`);
+                        var $h = $(`<h4> ${title} </h4>`);
+                        //获取当前高度最小的Li,实时遍历
+                        var min_Index = getMinLi(liList);
+
+
+//                        liList[min_Index].appendChild()
+                        $(liList[min_Index]).append($img).append($h);
+
+
+                    }
+                }
+            });
+        });
+    </script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;/* 影响width*/
+        }
+        ul {
+            width: 1200px;
+            margin: 5px auto;
+            list-style: none;
+        }
+        li {
+            float: left;
+            width: 300px;
+            border: 1px solid #ccc;
+            padding: 5px;
+            margin-left: -1px;
+        }
+        h4 {
+            color: steelblue;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<ul>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+</ul>
+</body>
+</html>
